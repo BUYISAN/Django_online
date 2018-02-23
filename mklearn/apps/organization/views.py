@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse
 
 from django.views.generic import View
 from .models import CourseOrg, CityDict
+from courses.models import Course
 
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
@@ -60,3 +61,67 @@ class AddUserAskView(View):
             return HttpResponse(json.dumps({'status': 'success'}))
         else:
             return HttpResponse(json.dumps({'status': 'fail', 'msg': '添加出错'}))
+
+
+class OrgHomeView(View):
+    """
+    机构首页
+    """
+
+    def get(self, request, org_id):
+        current_page = 'home'
+        course_org = CourseOrg.objects.get(id=int(org_id))
+        all_courses = course_org.course_set.all()[:3]
+        all_teachers = course_org.teacher_set.all()[:1]
+        return render(request, 'org-detail-homepage.html', {
+            'all_courses': all_courses,
+            'all_teachers': all_teachers,
+            'org': course_org,
+            'current_page': current_page
+        })
+
+
+class OrgCourseView(View):
+    """
+    机构课程列表页
+    """
+
+    def get(self, request, org_id):
+        current_page = 'course'
+        course_ort = CourseOrg.objects.get(id=int(org_id))
+        all_courses = course_ort.course_set.all()
+        return render(request, 'org-detail-course.html', {
+            'all_courses': all_courses,
+            'org': course_ort,
+            'current_page': current_page
+        })
+
+
+class OrgDescView(View):
+    """
+    机构介绍页
+    """
+
+    def get(self, request, org_id):
+        current_page = 'desc'
+        course_ort = CourseOrg.objects.get(id=int(org_id))
+        return render(request, 'org-detail-desc.html', {
+            'org': course_ort,
+            'current_page': current_page
+        })
+
+
+class OrgTeacherView(View):
+    """
+    机构教师页
+    """
+
+    def get(self, request, org_id):
+        current_page = 'teacher'
+        course_ort = CourseOrg.objects.get(id=int(org_id))
+        all_teacher = course_ort.teacher_set.all()
+        return render(request, 'org-detail-teachers.html', {
+            'all_teacher': all_teacher,
+            'org': course_ort,
+            'current_page': current_page
+        })

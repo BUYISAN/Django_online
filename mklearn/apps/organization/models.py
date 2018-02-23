@@ -47,7 +47,12 @@ class Teacher(models.Model):
     click_num = models.IntegerField(default=0, verbose_name='点击数')
     fav_nums = models.IntegerField(default=0, verbose_name='收藏数')
     add_time = models.DateTimeField(default=datetime.datetime.now)
+    image = models.ImageField(upload_to='teacher/%Y/%m', verbose_name='头像', max_length=100,null=True)
+
 
     class Meta:
         verbose_name = '教师'
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.name
